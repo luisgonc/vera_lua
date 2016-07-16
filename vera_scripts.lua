@@ -91,11 +91,23 @@ function check_motion_qla()
 end
 
 -- Set a 3 second delay for a recheck and light switch ON if needed
-luup.call_delay("check_motion_qla", 3)
+luup.call_delay("check_motion_qla", 2.5)
 
 
 --[[ ======================================================================== --]]
 
 
+--[[ Check the Gate status and send notification --]]
+function check_gate_left_open()
+    local gate_status = luup.variable_get("urn:micasaverde-com:serviceId:SecuritySensor1", "Tripped", 5)
+
+    if (gate_status == "1") then
+         luup.call_action("urn:upnp-org:serviceId:VSwitch1", "SetTarget", {newTargetValue = "1"}, 29)
+    end
+end
+
+-- Set a 4(240seconds) minutes delay for a recheck and send notification if needed
+luup.call_delay("check_gate_left_open", 240)
 
 
+--[[ ======================================================================== --]]
