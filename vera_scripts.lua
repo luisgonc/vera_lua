@@ -111,3 +111,37 @@ luup.call_delay("check_gate_left_open", 240)
 
 
 --[[ ======================================================================== --]]
+
+--[[ Check if the system is in Home mode and if true switch it to night --]]
+
+-- Mode values can assume the following
+-- Home     = 1
+-- Away     = 2
+-- Night    = 3
+-- Vacation = 4
+
+local status, mode_val = luup.inet.wget("http://127.0.0.1:3480/data_request?id=variableget&Variable=Mode",0)
+
+-- Only change to night if the current state is Home
+if (tonumber(mode_val) == 1) then
+	luup.call_action("urn:micasaverde-com:serviceId:HomeAutomationGateway1","SetHouseMode", {Mode = 3}, 0)
+end
+
+--[[ ======================================================================== --]]
+
+--[[ Check if the system is in Night mode and if true switch it to Home --]]
+
+-- Mode values can assume the following
+-- Home     = 1
+-- Away     = 2
+-- Night    = 3
+-- Vacation = 4
+
+local status, mode_val = luup.inet.wget("http://127.0.0.1:3480/data_request?id=variableget&Variable=Mode",0)
+
+-- Only change to night if the current state is Night
+if (tonumber(mode_val) == 3) then
+	luup.call_action("urn:micasaverde-com:serviceId:HomeAutomationGateway1","SetHouseMode", {Mode = 1}, 0)
+end
+
+--[[ ======================================================================== --]]
